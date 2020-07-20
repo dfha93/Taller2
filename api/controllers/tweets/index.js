@@ -41,9 +41,6 @@ const newTweet = (req, res) => {
         res.sendStatus(500);
     }
 };
-const deleteTweet = (req, res) => {
-    res.send("Borrar tweet");
-};
 const newComment = (req, res) => {
     const tweet = req.body.tweet;
     const comment = {
@@ -59,4 +56,35 @@ const newComment = (req, res) => {
     })
 };
 
-module.exports = {getTweets, getTweet, newTweet, deleteTweet, newComment};
+//Taller 2
+
+const deleteTweet = (req, res) => { //////REVISAR
+    const id = req.params.id;
+    Tweet.deleteOne({_id : id})
+    .then((response)=>{
+        res.status(200).send(response);
+    })
+    .catch((err)=>{
+        res.sendStatus(500);
+    })
+    
+    //res.send("Borrar tweet");
+};
+
+
+const deleteComment = (req, res) => {  //////////////// REVISAR
+  const tweet = req.body.tweet;
+  const comment = {
+      comment: req.body.comment,
+      user: req.body.user
+  };
+  Tweet.findOneAndUpdate({_id :tweet}, {$pull: {comments : comment}})
+  .then(response=>{
+      res.status(202).send(response);
+  })
+  .catch(err=>{
+      res.status(500).send(err);
+  })
+};
+
+module.exports = {getTweets, getTweet, newTweet, deleteTweet, newComment, deleteComment};

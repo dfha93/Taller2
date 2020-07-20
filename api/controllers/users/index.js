@@ -1,4 +1,5 @@
 const User = require('./../../models/users');
+const Tweet = require('./../../models/tweets');
 
 const getAll = (req, res) =>{
     User.find({}, ["name", "username"])
@@ -41,11 +42,36 @@ const newUser = (req, res) => {
         res.sendStatus(500);
     }
 };
-const updateUser = (req, res) => {
-    res.send("Actualizar usuario");
+
+//Taller2
+
+const updateUser = (req, res) => { ///////REVISAR
+    const UserId = req.body.id;
+    const user = {
+        password: req.body.password,
+        email: req.body.email,
+        telephone: req.body.telephone
+    };
+    User.updateOne({_id :UserId}, {$addToSet: user})
+    .then(response=>{
+        res.status(202).send(response);
+    })
+    .catch(err=>{
+        res.status(500).send(err);
+    })
+    //res.send("Actualizar usuario");
 };
-const deleteUser = (req, res) => {
-    res.send("Borrar usuario");
+const deleteUser = (req, res) => { //REVISAR
+    const UserId = req.body.id;
+    User.deleteOne({_is:UserId})
+    .then( response =>{
+        res.status(202).send(response);
+    })
+    .catch(err=>{
+        res.status(500).send(err);
+    })
+    //res.send("Borrar usuario");
 };
+
 
 module.exports = {getAll, getUser, newUser, updateUser, deleteUser};

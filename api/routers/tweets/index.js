@@ -8,7 +8,8 @@ router.route('/')
     .delete(controller.deleteTweet);
 
 router.route('/comment')
-    .post(controller.newComment);
+    .post(controller.newComment)
+    .post(controller.deleteComment);
 router.route('/:id')
         .get(controller.getTweet);
 
