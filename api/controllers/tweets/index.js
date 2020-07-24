@@ -61,8 +61,8 @@ const newComment = (req, res) => {
 //Taller 2
 
 const deleteTweet = (req, res) => { //////REVISAR
-    const id = req.params.id;
-    Tweet.deleteOne({_id : id})
+    const tweet = req.body.tweet;
+    Tweet.deleteOne({_id : tweet})
     .then((response)=>{
         res.status(200).send(response);
     })
@@ -75,19 +75,16 @@ const deleteTweet = (req, res) => { //////REVISAR
 
 
 const deleteComment = (req, res) => {  //////////////// REVISAR
-  const tweet = req.body.tweet;
-  const comment = {
-      comment: req.body.comment,
-      user: req.body.user
+    const tweet = req.body.tweet;
+    const comment = req.body.comment
+    Tweet.updateOne({_id :tweet}, {$pull: {comments : { _id: comment }}})
+    .then(response=>{
+        res.status(202).send(response);
+    })
+    .catch(err=>{
+        res.status(500).send(err);
+    })
   };
-  Tweet.findOneAndUpdate({_id :tweet}, {$pull: {comments : comment}})
-  .then(response=>{
-      res.status(202).send(response);
-  })
-  .catch(err=>{
-      res.status(500).send(err);
-  })
-};
 
 
 // 7. lista de ultimos {n} tweets. /api/tweets/lasts/:count
