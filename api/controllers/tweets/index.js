@@ -118,7 +118,6 @@ const numeroTotalCommentsPorTweet = (req, res) => {
     Tweet.find({_id : Userid}, ["_id", "comments"])
     .then(response => {        
         const result = {
-            
             id: response[0]._id,
             cantidad: response[0].comments.length
         }
