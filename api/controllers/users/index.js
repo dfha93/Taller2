@@ -89,6 +89,19 @@ const TweetsTotalesDeUsuario = (req, res) => {
     });
 }
 
+// 6. lista de tweets del usuario
+const listUserTweets = (req, res) => {  
+    const user_id = req.params.id;
+    
+    Tweet.find({user : user_id}, ["content", "createdAt"])
+    .then(response=>{
+        res.status(202).send(response);
+    })
+    .catch(err=>{
+        res.status(500).send(err);
+    })
+  };
 
 
-module.exports = {getAll, getUser, newUser, updateUser, deleteUser, TweetsTotalesDeUsuario};
+module.exports = {getAll, getUser, newUser, updateUser, deleteUser, TweetsTotalesDeUsuario,listUserTweets};
+

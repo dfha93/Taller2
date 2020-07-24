@@ -1,4 +1,6 @@
 const Tweet = require('./../../models/tweets');
+const {ObjectId} = require('mongodb');
+
 const getTweets = (req, res) =>{
     Tweet
     .find({})
@@ -84,4 +86,45 @@ const deleteComment = (req, res) => {  //////////////// REVISAR
     })
   };
 
-module.exports = {getTweets, getTweet, newTweet, deleteTweet, newComment, deleteComment};
+
+// 7. lista de ultimos {n} tweets. /api/tweets/lasts/:count
+const lastNtweets = (req, res) => {  
+    const count = parseInt(req.params.count);
+
+   Tweet.find({}).sort({"createdAt": -1}).limit(count)
+    .then(response=>{
+        res.status(202).send(response);
+    })
+    .catch(err=>{
+        res.status(500).send(err);
+    })
+  };
+
+// 8.  GET /api/tweets/:id/comments/count - Número total de comentarios de un tweet
+  const totalNumberCommentsForTweet = (req, res) => {  
+    const tweet_id = parseInt(req.params.id);
+
+    //Tweet.aggregate([{ $match: { _id: ObjectId(tweet_id) }},{ $project: {_id:1, commentsCount: { $cond: { if: { $isArray: "$comments" }, then: { $size: "$comments" }, else: "NA"} }}}])
+    Tweet.aggregate([{ $project: {_id:1, commentsCount: { $cond: { if: { $isArray: "$comments" }, then: { $size: "$comments" }, else: "NA"} }}}])
+    .then(response=>{
+        console.log(response)
+        res.status(202).send(response);
+    })
+    .catch(err=>{
+        res.status(500).send(err);
+    })
+  };
+
+
+
+module.exports = {
+    getTweets, 
+    getTweet, 
+    newTweet, 
+    deleteTweet, 
+    newComment, 
+    deleteComment,
+    lastNtweets,
+    totalNumberCommentsForTweet
+    
+};
