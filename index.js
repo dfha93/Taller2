@@ -7,7 +7,8 @@ const api = require('./api');
 app.use(express.json());
 app.use('/api', api);
 //protocol://user:password@host:port/resource
-mongoose.connect('mongodb://localhost/twitter', {
+//mongodb://localhost/twitter
+mongoose.connect('mongodb+srv://damell:uninorte@cluster0.yn1qn.mongodb.net/Cluster0?retryWrites=true&w=majority', {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }, ()=>{

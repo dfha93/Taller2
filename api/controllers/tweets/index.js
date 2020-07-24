@@ -59,7 +59,7 @@ const newComment = (req, res) => {
 };
 
 //Taller 2
-
+// 3. Borrar Tweet
 const deleteTweet = (req, res) => { //////REVISAR
     const tweet = req.body.tweet;
     Tweet.deleteOne({_id : tweet})
@@ -73,7 +73,7 @@ const deleteTweet = (req, res) => { //////REVISAR
     //res.send("Borrar tweet");
 };
 
-
+// 4. Borrar Comment
 const deleteComment = (req, res) => {  //////////////// REVISAR
     const tweet = req.body.tweet;
     const comment = req.body.comment
