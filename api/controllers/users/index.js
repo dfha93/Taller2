@@ -45,7 +45,7 @@ const newUser = (req, res) => {
 };
 
 //Taller2
-
+// 1. Actualizar Usuarios
 const updateUser = (req, res) => { ///////REVISAR
     const UserId = req.params.id;
     console.log(req)
@@ -64,7 +64,7 @@ const updateUser = (req, res) => { ///////REVISAR
 };
 
 
-
+// 2. Borrar Usuario
 const deleteUser = (req, res) => { //REVISAR
     const UserId = req.body.id;
     console.log(req)
@@ -78,6 +78,7 @@ const deleteUser = (req, res) => { //REVISAR
     //res.send("Borrar usuario");
 };
 
+//5. Numero de de comentarios del Tweet
 const TweetsTotalesDeUsuario = (req, res) => {
     const user = req.body.user;
     Tweet.find({user: {_id: user}})
