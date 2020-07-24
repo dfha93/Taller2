@@ -1,6 +1,18 @@
 const Tweet = require('./../../models/tweets');
 const {ObjectId} = require('mongodb');
 
+let Sort = (Tweets, count) => {
+    
+    const result = [];
+    Tweets.sort((a, b) => {
+        if (a.comments.length > b.comments.length) {return 1;}
+        if (a.comments.length < b.comments.length) {return -1;}
+        return 0;
+    });
+    for(i=0; i < count; i++) {result.push(Tweets[Tweets.length - i - 1]);}
+    return result;
+}
+
 const getTweets = (req, res) =>{
     Tweet
     .find({})
@@ -100,31 +112,52 @@ const lastNtweets = (req, res) => {
     })
   };
 
-// 8.  GET /api/tweets/:id/comments/count - Número total de comentarios de un tweet
-  const totalNumberCommentsForTweet = (req, res) => {  
-    const tweet_id = parseInt(req.params.id);
-
-    //Tweet.aggregate([{ $match: { _id: ObjectId(tweet_id) }},{ $project: {_id:1, commentsCount: { $cond: { if: { $isArray: "$comments" }, then: { $size: "$comments" }, else: "NA"} }}}])
-    Tweet.aggregate([{ $project: {_id:1, commentsCount: { $cond: { if: { $isArray: "$comments" }, then: { $size: "$comments" }, else: "NA"} }}}])
-    .then(response=>{
-        console.log(response)
-        res.status(202).send(response);
+// 8.  Número total de comentarios de un tweet
+const numeroTotalCommentsPorTweet = (req, res) => {
+    const Userid = req.params.id
+    Tweet.find({_id : Userid}, ["_id", "comments"])
+    .then(response => {        
+        const result = {
+            
+            id: response[0]._id,
+            cantidad: response[0].comments.length
+        }
+        console.log(result)
+        res.status(200).send(result);
     })
-    .catch(err=>{
-        res.status(500).send(err);
+    .catch((err)=>{
+        res.sendStatus(500);
+    });
+}
+
+//9. Lista de n tweets mas comentados.
+const tweetsMasComentados = (req, res) => {
+    console.log(`${req.params.count} tweets más comentados: `);
+    const count = Number(req.params.count);
+    console.log(count)
+    Tweet.find({},['_id', 'comments'])
+    .then((response)=>{
+        res.status(200).send(Sort(response, count));
     })
-  };
+    .catch((err)=>{
+        res.sendStatus(500);
+    });
+}
 
+//10 Lista de {n} usuarios con mayor número de tweets
 
+const usuariosConMasTweets = (req, res) => {
+    const count = Number(req.params.count);
+    Tweet.aggregate([{ $group: { _id: '$user', count: { $sum: 1 } } }, { $sort : { count: -1 } }])
+    .limit(count)
+    .then((response)=>{
+        res.status(200).send(response);
+    })
+    .catch((err)=>{
+        res.sendStatus(500).res.send(err);
+    });
+}
 
-module.exports = {
-    getTweets, 
-    getTweet, 
-    newTweet, 
-    deleteTweet, 
-    newComment, 
-    deleteComment,
-    lastNtweets,
-    totalNumberCommentsForTweet
-    
+module.exports = {getTweets, getTweet, newTweet, deleteTweet, newComment, deleteComment, lastNtweets, 
+    numeroTotalCommentsPorTweet, tweetsMasComentados, usuariosConMasTweets
 };
