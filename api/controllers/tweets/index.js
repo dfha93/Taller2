@@ -132,7 +132,6 @@ const numeroTotalCommentsPorTweet = (req, res) => {
 
 //9. Lista de n tweets mas comentados.
 const tweetsMasComentados = (req, res) => {
-    console.log(`${req.params.count} tweets más comentados: `);
     const count = Number(req.params.count);
     console.log(count)
     Tweet.find({},['_id', 'comments'])
